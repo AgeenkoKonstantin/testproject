@@ -1,4 +1,6 @@
-<?php
+<?php /** @noinspection PhpUnitTestFailedLineInspection */
+
+/** @noinspection ALL */
 
 namespace App\Tests\Controller;
 
