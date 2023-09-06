@@ -27,6 +27,7 @@ class BookCategory
     public function setId(?int $id): BookCategory
     {
         $this->id = $id;
+
         return $this;
     }
 
