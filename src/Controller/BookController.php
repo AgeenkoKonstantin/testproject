@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Model\BookListResponse;
 use App\Service\BookService;
+use http\Exception\RuntimeException;
 use Nelmio\ApiDocBundle\Annotation\Model;
 use OpenApi\Annotations as OA;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
