@@ -2,9 +2,10 @@
 
 namespace App\Model;
 
-class BookCategoryListItem
+class BookCategory
 {
     private int $id;
+
     private string $title;
 
     private string $slug;

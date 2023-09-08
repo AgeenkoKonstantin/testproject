@@ -52,8 +52,10 @@ class BookControllerTest extends AbstractControllerTest
         $this->entityManager->persist((new Book())
             ->setTitle('Test book')
             ->setImage('http://localhost.png')
+            ->setIsbn('1231231')
+            ->setDescription('test description')
             ->setMeap(true)
-            ->setPublicationDate(new \DateTime())
+            ->setPublicationDate(new \DateTimeImmutable())
             ->setAuthors(['Tester'])
             ->setCategories(new ArrayCollection([$bookCategory]))
             ->setSlug('test-book'));
