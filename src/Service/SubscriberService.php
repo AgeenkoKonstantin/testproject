@@ -26,4 +26,6 @@ class SubscriberService
         $this->em->persist($subscriber);
         $this->em->flush();
     }
+
+
 }
