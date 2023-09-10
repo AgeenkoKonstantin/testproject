@@ -12,8 +12,8 @@ class BookCategoryControllerTest extends AbstractControllerTest
 {
     public function testCategories(): void
     {
-        $this->entityManager->persist((new BookCategory())->setTitle('Devices')->setSlug('devices'));
-        $this->entityManager->flush();
+        $this->em->persist((new BookCategory())->setTitle('Devices')->setSlug('devices'));
+        $this->em->flush();
 
         $this->client->request('GET', '/api/v1/book/categories');
         $responseContent = json_decode($this->client->getResponse()->getContent(), true);

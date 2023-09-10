@@ -13,7 +13,7 @@ class ReviewControllerTest extends AbstractControllerTest
     {
         $book = $this->createBook();
         $this->createReview($book);
-        $this->entityManager->flush();
+        $this->em->flush();
 
         $this->client->request('GET', '/api/v1/book/'.$book->getId().'/reviews');
         $responseContent = json_decode($this->client->getResponse()->getContent(), true);
@@ -58,14 +58,14 @@ class ReviewControllerTest extends AbstractControllerTest
             ->setAuthors(['Tester'])
             ->setCategories(new ArrayCollection([]))
             ->setSlug('test-book');
-        $this->entityManager->persist($book);
+        $this->em->persist($book);
 
         return $book;
     }
 
     private function createReview(Book $book): void
     {
-        $this->entityManager->persist((new Review())
+        $this->em->persist((new Review())
             ->setAuthor('tester')
             ->setContent('test content')
             ->setCreatedAt(new \DateTimeImmutable())

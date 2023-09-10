@@ -79,8 +79,8 @@ class RecommendationControllerTest extends AbstractControllerTest
             ->setCategories(new ArrayCollection([]))
             ->setSlug('test-book');
 
-        $this->entityManager->persist($book);
-        $this->entityManager->flush();
+        $this->em->persist($book);
+        $this->em->flush();
 
         return $book->getId();
     }

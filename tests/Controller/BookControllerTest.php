@@ -92,9 +92,9 @@ class BookControllerTest extends AbstractControllerTest
     private function createCategory(): int
     {
         $bookCategory = (new BookCategory())->setTitle('Devices')->setSlug('devices');
-        $this->entityManager->persist($bookCategory);
+        $this->em->persist($bookCategory);
 
-        $this->entityManager->persist((new Book())
+        $this->em->persist((new Book())
             ->setTitle('Test book')
             ->setImage('http://localhost.png')
             ->setIsbn('1231231')
@@ -105,7 +105,7 @@ class BookControllerTest extends AbstractControllerTest
             ->setCategories(new ArrayCollection([$bookCategory]))
             ->setSlug('test-book'));
 
-        $this->entityManager->flush();
+        $this->em->flush();
 
         return $bookCategory->getId();
     }
@@ -113,12 +113,12 @@ class BookControllerTest extends AbstractControllerTest
     private function createBook(): int
     {
         $bookCategory = (new BookCategory())->setTitle('Devices')->setSlug('devices');
-        $this->entityManager->persist($bookCategory);
+        $this->em->persist($bookCategory);
 
         $format = (new BookFormat())->setTitle('format')->setDescription('description format')
             ->setComment(null);
 
-        $this->entityManager->persist($format);
+        $this->em->persist($format);
 
         $book = (new Book())
             ->setTitle('Test book')
@@ -131,16 +131,16 @@ class BookControllerTest extends AbstractControllerTest
             ->setCategories(new ArrayCollection([$bookCategory]))
             ->setSlug('test-book');
 
-        $this->entityManager->persist($book);
+        $this->em->persist($book);
 
         $join = (new BookToBookFormat())->setPrice(123.55)
             ->setFormat($format)
             ->setDiscountPercent(5)
             ->setBook($book);
 
-        $this->entityManager->persist($join);
+        $this->em->persist($join);
 
-        $this->entityManager->flush();
+        $this->em->flush();
 
         return $book->getId();
     }
