@@ -3,6 +3,7 @@
 namespace App\Tests\Service;
 
 use App\Repository\ReviewRepository;
+use App\Service\Rating;
 use App\Service\RatingService;
 use App\Tests\AbstractTestCase;
 
@@ -34,17 +35,30 @@ class RatingServiceTest extends AbstractTestCase
             ->with(1)
             ->willReturn($repositoryRatingSum);
 
-        $actual = (new RatingService($this->reviewRepository))->calcReviewServiceForBook(1, $total);
+        $this->reviewRepository->expects($this->once())
+            ->method('countByBookId')
+            ->with(1)
+            ->willReturn($total);
 
-        $this->assertEquals($expectingRating, $actual);
+        $actual = (new RatingService($this->reviewRepository))->calcReviewRatingForBook(1);
+        $this->assertEquals(
+            new Rating($total, $expectingRating),
+            $actual);
     }
 
     public function testCalcReviewServiceForBookZeroTotal(): void
     {
-        $this->reviewRepository->expects($this->never())->method('getBookTotalRatingSum');
+        $this->reviewRepository->expects($this->never())
+            ->method('getBookTotalRatingSum');
 
-        $actual = (new RatingService($this->reviewRepository))->calcReviewServiceForBook(1, 0);
+        $this->reviewRepository->expects($this->once())
+            ->method('countByBookId')
+            ->with(1)
+            ->willReturn(0);
 
-        $this->assertEquals(0, $actual);
+        $actual = (new RatingService($this->reviewRepository))->calcReviewRatingForBook(1);
+
+        $this->assertEquals(new Rating(0, 0),
+            $actual);
     }
 }
