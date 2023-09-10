@@ -8,8 +8,6 @@ use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
- * @extends ServiceEntityRepository<Book>
- *
  * @method Book|null find($id, $lockMode = null, $lockVersion = null)
  * @method Book|null findOneBy(array $criteria, array $orderBy = null)
  * @method Book[]    findAll()
@@ -36,11 +34,18 @@ class BookRepository extends ServiceEntityRepository
     public function getById(int $id): Book
     {
         $book = $this->find($id);
-        if (null === $book)
-        {
+        if (null === $book) {
             throw new BookNotFoundException();
         }
 
         return $book;
+    }
+
+    /**
+     * @return Book[]
+     */
+    public function findBooksByIds(array $ids): array
+    {
+        return $this->findBy(['id' => $ids]);
     }
 }
