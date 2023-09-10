@@ -4,6 +4,9 @@ controllers:
         namespace: App\Controller
     type: attribute
 
-# config/routes.yaml
 api_login_check:
     path: /api/v1/auth/login
+
+api_refresh_token:
+    path: /api/v1/auth/refresh
+
