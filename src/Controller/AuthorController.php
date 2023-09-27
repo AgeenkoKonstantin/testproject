@@ -3,16 +3,22 @@
 namespace App\Controller;
 
 use App\Attribute\RequestBody;
-use App\Model\Author\CreateBookRequest;
-use App\Service\AuthorService;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Annotation\Route;
-use OpenApi\Annotations as OA;
-use Nelmio\ApiDocBundle\Annotation\Model;
+use App\Attribute\RequestFile;
 use App\Model\Author\BookListResponse;
+use App\Model\Author\CreateBookRequest;
+use App\Model\Author\PublishBookRequest;
+use App\Model\Author\UploadCoverResponse;
 use App\Model\ErrorResponse;
 use App\Model\IdResponse;
+use App\Service\AuthorService;
+use Nelmio\ApiDocBundle\Annotation\Model;
+use OpenApi\Annotations as OA;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Validator\Constraints\Image;
+use Symfony\Component\Validator\Constraints\NotNull;
 
 class AuthorController extends AbstractController
 {
@@ -22,9 +28,12 @@ class AuthorController extends AbstractController
 
     /**
      * @OA\Tag(name="Author API")
+     *
      * @OA\Response(
      *     response=200,
-     *     description="Get authors owned books"
+     *     description="Get authors owned books",
+     *
+     *     @Model(type=BookListResponse::class)
      * )
      */
     #[Route(path: '/api/v1/author/books', methods: ['GET'])]
@@ -35,16 +44,21 @@ class AuthorController extends AbstractController
 
     /**
      * @OA\Tag(name="Author API")
+     *
      * @OA\Response(
      *     response=200,
      *     description="Create a book",
+     *
      *     @Model(type=IdResponse::class)
      * )
+     *
      * @OA\Response(
      *     response="400",
      *     description="Validation failed",
+     *
      *     @Model(type=ErrorResponse::class)
      * )
+     *
      * @OA\RequestBody(@Model(type=CreateBookRequest::class))
      */
     #[Route(path: '/api/v1/author/book', methods: ['POST'])]
@@ -55,6 +69,75 @@ class AuthorController extends AbstractController
 
     /**
      * @OA\Tag(name="Author API")
+     *
+     * @OA\Response(
+     *     response=200,
+     *     description="Publish a book",
+     * )
+     * @OA\Response(
+     *     response="400",
+     *     description="Validation failed",
+     *
+     *     @Model(type=ErrorResponse::class)
+     * )
+     *
+     * @OA\RequestBody(@Model(type=PublishBookRequest::class))
+     */
+    #[Route(path: '/api/v1/author/book/{id}/publish', methods: ['POST'])]
+    public function publish(int $bookId, #[RequestBody] PublishBookRequest $request): Response
+    {
+        $this->authorService->publish($bookId, $request);
+
+        return $this->json(null);
+    }
+
+    /**
+     * @OA\Tag(name="Author API")
+     *
+     * @OA\Response(
+     *     response=200,
+     *     description="Unpublish a book",
+     * )
+     */
+    #[Route(path: '/api/v1/author/book/{id}/unpublish', methods: ['POST'])]
+    public function unpublish(int $bookId): Response
+    {
+        $this->authorService->unpublish($bookId);
+
+        return $this->json(null);
+    }
+
+    /**
+     * @OA\Tag(name="Author API")
+     *
+     * @OA\Response(
+     *     response=200,
+     *     description="Upload book cover",
+     *
+     *     @Model(type=UploadCoverResponse::class)
+     * )
+     *
+     * @OA\Response(
+     *     response="400",
+     *     description="Validation failed",
+     *
+     *     @Model(type=ErrorResponse::class)
+     * )
+     */
+    #[Route(path: '/api/v1/author/book/{id}/uploadCover', methods: ['POST'])]
+    public function uploadCover(
+        int $id,
+        #[RequestFile(field: 'cover', constraints: [
+            new NotNull(),
+            new Image(maxSize: '1M', mimeTypes: ['image/jpg', 'image/png', 'image/jpeg']),
+        ])] UploadedFile $uploadedFile
+    ): Response {
+        return $this->json($this->authorService->uploadCover($id, $uploadedFile));
+    }
+
+    /**
+     * @OA\Tag(name="Author API")
+     *
      * @OA\Response(
      *     response=200,
      *     description="Remove a book"
@@ -62,6 +145,7 @@ class AuthorController extends AbstractController
      * @OA\Response(
      *     response=404,
      *     description="book not found",
+     *
      *     @Model(type=ErrorResponse::class)
      * )
      */
